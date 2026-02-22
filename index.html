@@ -1,219 +1,338 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Bingo da Angel</title>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bingo Master - Telão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --B: #2563eb; --I: #dc2626; --N: #16a34a; --G: #7c3aed; --O: #f59e0b;
+            --bg: #0f172a; --card-bg: #1e293b; --ball-off: #334155; --text-off: #94a3b8;
+        }
 
-<style>
-* {
-  box-sizing: border-box;
-}
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 100px 1fr;
+            overflow: hidden;
+        }
 
-body {
-  margin: 0;
-  height: 100vh;
-  background: #f4f6f8;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+        /* HEADER */
+        header {
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 3px solid #334155;
+            position: relative;
+        }
 
-h1 {
-  font-family: 'Pacifico', cursive;
-  font-size: 48px;
-  margin: 15px 0 10px;
-  color: #333;
-}
+        header h1 {
+            font-size: 50px;
+            letter-spacing: 15px;
+            margin: 0;
+            background: linear-gradient(to right, var(--B), var(--I), var(--N), var(--G), var(--O));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
+        /* LAYOUT PRINCIPAL */
+        main {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100%;
+        }
 
-input {
-  padding: 10px;
-  font-size: 18px;
-  width: 120px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
+        /* BARRA LATERAL ESQUERDA (STATUS) */
+        .sidebar {
+            background: rgba(0,0,0,0.3);
+            border-right: 2px solid #334155;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+        }
 
-button {
-  padding: 10px 18px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #0d6efd;
-  color: white;
-  font-weight: bold;
-}
+        .stat-box {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
 
-button:hover {
-  background: #084298;
-}
+        .stat-box small { color: var(--text-off); font-size: 12px; letter-spacing: 1px; }
+        .stat-box div { font-size: 40px; font-weight: 900; }
 
-/* Bola central */
-.ball-display {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: white;
-  border: 8px solid #0d6efd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-  margin: 10px 0;
-}
+        .history-vertical {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            overflow: hidden;
+        }
 
-.letter {
-  font-size: 60px;
-  font-weight: bold;
-  color: #0d6efd;
-}
+        .hist-item {
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 900;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
 
-.number {
-  font-size: 90px;
-  font-weight: bold;
-  color: #222;
-}
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Painel por letras */
-.panel {
-  width: 95%;
-  max-width: 1100px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-top: 10px;
-}
+        /* CONTROLES */
+        .admin-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-.column {
-  background: white;
-  border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            background: #1e293b;
+            color: #fff;
+        }
 
-.column h2 {
-  text-align: center;
-  font-size: 32px;
-  margin: 5px 0 10px;
-  color: #0d6efd;
-}
+        .btn-reset {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 900;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-reset:hover { background: #dc2626; transform: scale(1.02); }
 
-.balls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
+        /* ÁREA DO TABULEIRO */
+        .board-container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
 
-.small-ball {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #0d6efd;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: bold;
-}
-</style>
+        .col {
+            background: var(--card-bg);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .col-header {
+            font-size: 45px;
+            font-weight: 900;
+            text-align: center;
+            padding: 10px 0;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 15px;
+            flex: 1;
+            align-content: start;
+        }
+
+        .ball-slot {
+            aspect-ratio: 1/1;
+            background: var(--ball-off);
+            color: var(--text-off);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* ANIMAÇÃO BOLA GIGANTE */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: none; align-items: center; justify-content: center; z-index: 100;
+        }
+        .giant-ball {
+            width: 400px; height: 400px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-weight: 900; box-shadow: 0 0 100px rgba(0,0,0,0.8);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .giant-ball span { font-size: 80px; }
+        .giant-ball strong { font-size: 180px; line-height: 0.8; }
+
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .flying {
+            position: fixed; z-index: 999;
+            transition: all 0.8s ease-in;
+            pointer-events: none;
+        }
+    </style>
 </head>
-
 <body>
 
-<h1>Bingo da Angel</h1>
+<div id="overlay"></div>
 
-<div class="controls">
-  <input type="number" id="numberInput" placeholder="Número" min="1" max="75">
-  <button onclick="draw()">Sortear</button>
-  <button onclick="resetGame()">Nova Rodada</button>
-</div>
+<header>
+    <h1>BINGO</h1>
+</header>
 
-<div id="display" class="ball-display" style="display:none"></div>
+<main>
+    <aside class="sidebar">
+        <div class="stat-box">
+            <small>SORTEADAS</small>
+            <div id="ball-count">00</div>
+        </div>
 
-<div class="panel" id="panel">
-  <div class="column"><h2>B</h2><div class="balls" id="B"></div></div>
-  <div class="column"><h2>I</h2><div class="balls" id="I"></div></div>
-  <div class="column"><h2>N</h2><div class="balls" id="N"></div></div>
-  <div class="column"><h2>G</h2><div class="balls" id="G"></div></div>
-  <div class="column"><h2>O</h2><div class="balls" id="O"></div></div>
-</div>
+        <div class="admin-controls">
+            <input id="input" type="number" min="1" max="75" placeholder="Digite nº" autofocus>
+            <button class="btn-reset" onclick="reset()">NOVA PARTIDA</button>
+        </div>
+
+        <div style="text-align:center; color:var(--text-off); font-size:12px; margin-top:10px">ÚLTIMAS CHAMADAS</div>
+        <div class="history-vertical" id="history-vertical">
+            </div>
+    </aside>
+
+    <div class="board-container" id="board"></div>
+</main>
 
 <script>
-const ranges = [
-  {letter:'B', min:1, max:15},
-  {letter:'I', min:16, max:30},
-  {letter:'N', min:31, max:45},
-  {letter:'G', min:46, max:60},
-  {letter:'O', min:61, max:75}
-];
+    const drawn = [];
+    const config = [
+        { label: 'B', start: 1, color: 'var(--B)' },
+        { label: 'I', start: 16, color: 'var(--I)' },
+        { label: 'N', start: 31, color: 'var(--N)' },
+        { label: 'G', start: 46, color: 'var(--G)' },
+        { label: 'O', start: 61, color: 'var(--O)' }
+    ];
 
-let drawn = JSON.parse(localStorage.getItem("bingoDrawn")) || [];
+    function getLetter(n) {
+        return config[Math.floor((n - 1) / 15)] || config[4];
+    }
 
-function getLetter(num) {
-  return ranges.find(r => num >= r.min && num <= r.max)?.letter;
-}
+    function renderBoard() {
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+        config.forEach(item => {
+            const col = document.createElement('div');
+            col.className = 'col';
+            col.innerHTML = `<div class="col-header" style="color:${item.color}">${item.label}</div>`;
+            const grid = document.createElement('div');
+            grid.className = 'number-grid';
 
-function render() {
-  ranges.forEach(r => {
-    document.getElementById(r.letter).innerHTML = "";
-  });
+            for (let i = 0; i < 15; i++) {
+                const n = item.start + i;
+                const slot = document.createElement('div');
+                slot.className = 'ball-slot';
+                slot.id = `ball-${n}`;
+                slot.textContent = n;
+                if (drawn.includes(n)) {
+                    slot.style.backgroundColor = item.color;
+                    slot.style.color = '#fff';
+                    slot.style.transform = 'scale(1.1)';
+                }
+                grid.appendChild(slot);
+            }
+            col.appendChild(grid);
+            board.appendChild(col);
+        });
+    }
 
-  drawn.forEach(num => {
-    const letter = getLetter(num);
-    const ball = document.createElement("div");
-    ball.className = "small-ball";
-    ball.textContent = num;
-    document.getElementById(letter).appendChild(ball);
-  });
+    function updateSidebar() {
+        document.getElementById('ball-count').textContent = drawn.length.toString().padStart(2, '0');
+        const histContainer = document.getElementById('history-vertical');
+        histContainer.innerHTML = '';
 
-  if (drawn.length) {
-    const last = drawn[drawn.length - 1];
-    document.getElementById("display").style.display = "flex";
-    document.getElementById("display").innerHTML = `
-      <div class="letter">${getLetter(last)}</div>
-      <div class="number">${last}</div>
-    `;
-  }
-}
+        // Pega as últimas 5 (excluindo a atual que está no overlay se houver)
+        drawn.slice(-6).reverse().forEach(n => {
+            const info = getLetter(n);
+            const d = document.createElement('div');
+            d.className = 'hist-item';
+            d.style.backgroundColor = info.color;
+            d.style.color = '#fff';
+            d.textContent = n;
+            histContainer.appendChild(d);
+        });
+    }
 
-function draw() {
-  const input = document.getElementById("numberInput");
-  const num = Number(input.value);
+    function animateNewNumber(n) {
+        const info = getLetter(n);
+        const overlay = document.getElementById('overlay');
+        overlay.style.display = 'flex';
+        
+        overlay.innerHTML = `
+            <div class="giant-ball" id="giant" style="background:${info.color}; color:#fff">
+                <span>${info.label}</span>
+                <strong>${n}</strong>
+            </div>
+        `;
 
-  if (!num || num < 1 || num > 75 || drawn.includes(num)) {
-    input.value = "";
-    return;
-  }
+        setTimeout(() => {
+            const giant = document.getElementById('giant');
+            const target = document.getElementById(`ball-${n}`);
+            const rect = target.getBoundingClientRect();
+            
+            giant.classList.add('flying');
+            giant.style.width = '40px';
+            giant.style.height = '40px';
+            giant.style.left = rect.left + 'px';
+            giant.style.top = rect.top + 'px';
+            giant.style.fontSize = '12px';
+            giant.innerHTML = n;
 
-  drawn.push(num);
-  localStorage.setItem("bingoDrawn", JSON.stringify(drawn));
-  render();
-  input.value = "";
-}
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                drawn.push(n);
+                renderBoard();
+                updateSidebar();
+            }, 800);
+        }, 1200);
+    }
 
-function resetGame() {
-  if (!confirm("Iniciar nova rodada?")) return;
-  drawn = [];
-  localStorage.removeItem("bingoDrawn");
-  document.getElementById("display").style.display = "none";
-  render();
-}
+    document.getElementById('input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            const n = parseInt(e.target.value);
+            if (n >= 1 && n <= 75 && !drawn.includes(n)) {
+                animateNewNumber(n);
+                e.target.value = '';
+            } else {
+                e.target.value = '';
+            }
+        }
+    });
 
-render();
+    function reset() {
+        if(confirm("Deseja limpar o tabuleiro e começar uma nova partida?")) {
+            drawn.length = 0;
+            renderBoard();
+            updateSidebar();
+        }
+    }
+
+    renderBoard();
 </script>
-
 </body>
 </html>
